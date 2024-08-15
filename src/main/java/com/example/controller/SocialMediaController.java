@@ -3,10 +3,18 @@ package com.example.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.SpringApplication;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import java.util.List;
 
 import com.example.entity.Account;
 import com.example.entity.Message;
+import com.example.service.AccountService;
+import com.example.service.MessageService;
+
+import javafx.application.Application;
 
 /**
  * TODO: You will need to write your own endpoints and handlers for your controller using Spring. The endpoints you will need can be
@@ -18,13 +26,23 @@ import com.example.entity.Message;
 @RestController
 public class SocialMediaController 
 {
+
+    //ApplicationContext ctx = SpringApplication.run(SocialMediaController.class);
+
+    @Autowired
+    AccountService accountService;
+
+    @Autowired
+    MessageService messageService;
+
     //1
     @PostMapping("/register")
-    private @ResponseBody ResponseEntity<Account> postRegisterHandler(@RequestBody Account acc)
+    private @ResponseBody ResponseEntity<Account> postRegister(@RequestBody Account account)
     {   
-        if(acc.getAccountId() != null)
+        Account newAccount = accountService.registerAccount(account);
+        if(newAccount.getAccountId() != null)
         {
-            return new ResponseEntity<>(acc, HttpStatus.OK);
+            return new ResponseEntity<>(newAccount, HttpStatus.OK);
         }
         else
         {
@@ -34,49 +52,51 @@ public class SocialMediaController
 
     //2
     @PostMapping("/login")
-    private Account postLogiAccountHandler(@RequestBody Account acc)
+    private Account postLoginAccount(@RequestBody Account acc)
     {
         return null;
     }
 
     //3
     @PostMapping("/messages")
-    private Message postMessageHandler(@RequestBody Message msg)
+    private Message postMessage(@RequestBody Message msg)
     {
         return null;
     }
 
     //4
     @GetMapping("/messages")
-    private List<Message> getAllMessagesHandler()
+    private void getAllMessages()
     {
-        return null;
+        List<Message> messages = messageService.getAllMessages();
     }
 
     //5
     @GetMapping("/messages/{messageId}")
-    private Message getMessageById(@PathVariable int id)
+    private ResponseEntity<Message> getMessageById(@PathVariable int messageId)
     {
-        return null;
+        Message message = messageService.getMessageById(messageId);
+        return ResponseEntity.status(HttpStatus.OK).body(message);
     }
 
     //6
     @DeleteMapping("/messages/{messageId}")
-    private int deleteMessageHandler(@PathVariable int id)
+    private int deleteMessage(@PathVariable int id)
     {
         return 0;
     }
 
     //7
     @PatchMapping("/messages/{messageId}")
-    private int updateMessageHandler(@PathVariable int id)
+    private ResponseEntity<Integer> updateMessage(@PathVariable int messageId, @RequestBody String messageText)
     {
-        return 0;
+        //messageService.
+        return ResponseEntity.status(HttpStatus.OK).body(1);
     }
 
     //8
     @GetMapping("/accounts/{accountId}/messages")
-    private List<Message> getAllMessagesByAccountHandler(@PathVariable int id)
+    private List<Message> getAllMessagesByAccount(@PathVariable int id)
     {
         return null;
     }
